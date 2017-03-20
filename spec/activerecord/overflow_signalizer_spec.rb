@@ -5,7 +5,16 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
     expect(ActiveRecord::OverflowSignalizer::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    expect(false).to eq(true)
+  describe '#analise!' do
+    context 'signalize to logger' do
+      let!(:logger) { double(:logger, warn: true) }
+
+      subject { described_class.new(logger: logger) }
+
+      it 'doesn`t log anything' do
+        expect(logger).not_to receive(:warn)
+        subject.analise!
+      end
+    end
   end
 end

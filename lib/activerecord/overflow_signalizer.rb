@@ -1,7 +1,13 @@
 require 'activerecord/overflow_signalizer/version'
 
 module ActiveRecord
-  module OverflowSignalizer
-    # Your code goes here...
+  class OverflowSignalizer
+    def initialize(logger:)
+      @logger = logger
+    end
+
+    def analise!
+
+    end
   end
 end
