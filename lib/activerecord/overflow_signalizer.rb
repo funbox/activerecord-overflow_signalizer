@@ -13,6 +13,11 @@ module ActiveRecord
 
     DAY = 24 * 60 * 60
 
+    MAX_VALUE = {
+      'integer' => 2_147_483_647,
+      'bigint' => 9_223_372_036_854_775_807
+    }.freeze
+
     def initialize(logger: nil, models: nil, days_count: 60, signalizer: nil)
       @logger = logger || ActiveRecord::Base.logger
       @models = models || ActiveRecord::Base.descendants
@@ -25,16 +30,17 @@ module ActiveRecord
         model = models.first
         pk = model.columns.select { |c| c.name == model.primary_key }.first
         next if model.last.nil?
-        if overflow_soon?(pk, model)
-          signalize(table, model.last.public_send(pk.name), max_value(pk.sql_type))
+        max = MAX_VALUE.fetch(pk.sql_type) { |type| raise UnsupportedType, type }
+        if overflow_soon?(max, model)
+          signalize(table, model.last.public_send(pk.name), max)
         end
       end
     end
 
     private
 
-    def overflow_soon?(pk, model)
-      (max_value(pk.sql_type) - model.last.id) / avg(model) <= @days_count
+    def overflow_soon?(max, model)
+      (max - model.last.id) / avg(model) <= @days_count
     end
 
     def avg(model)
@@ -45,17 +51,6 @@ module ActiveRecord
         model.where(created_at: from..to).count
       end
       week_records.reduce(:+) / week_records.keep_if { |v| v > 0 }.size
-    end
-
-    def max_value(type)
-      case type
-      when 'integer'
-        2_147_483_647
-      when 'bigint'
-        9_223_372_036_854_775_807
-      else
-        raise UnsupportedType, type
-      end
     end
 
     def signalize(table, current_value, max_value)
