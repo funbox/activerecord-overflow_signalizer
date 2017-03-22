@@ -38,9 +38,9 @@ module ActiveRecord
     end
 
     def avg(model)
-      yesterday = Time.now
+      now = Time.now
       week_records = (1..7).map do |t|
-        from = yesterday - DAY * t
+        from = now - DAY * t
         to = from + DAY
         model.where(created_at: from..to).count
       end
