@@ -5,7 +5,7 @@ require 'activerecord/overflow_signalizer/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'activerecord-overflow_signalizer'
-  spec.version       = Activerecord::OverflowSignalizer::VERSION
+  spec.version       = ActiveRecord::OverflowSignalizer::VERSION
   spec.authors       = ['v.promzelev']
   spec.email         = ['v.promzelev@fun-box.ru']
 
