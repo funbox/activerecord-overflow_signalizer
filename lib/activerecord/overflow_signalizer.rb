@@ -12,6 +12,7 @@ module ActiveRecord
     end
 
     DAY = 24 * 60 * 60
+    DEFAULT_AVG = 100_000
 
     MAX_VALUE = {
       'integer' => 2_147_483_647,
@@ -40,7 +41,11 @@ module ActiveRecord
     private
 
     def overflow_soon?(max, model)
-      (max - model.last.id) / avg(model) <= @days_count
+      if model.columns.select { |c| c.name == 'created_at' }.empty?
+        (max - model.last.id) / DEFAULT_AVG <= @days_count
+      else
+        (max - model.last.id) / avg(model) <= @days_count
+      end
     end
 
     def avg(model)
