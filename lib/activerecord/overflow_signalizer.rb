@@ -25,13 +25,17 @@ module ActiveRecord
         model = models.first
         pk = model.columns.select { |c| c.name == model.primary_key }.first
         next if model.last.nil?
-        if (max_value(pk.sql_type) - model.last.id) / avg(model) <= @days_count
+        if overflow_soon?(pk, model)
           signalize(table, model.last.public_send(pk.name), max_value(pk.sql_type))
         end
       end
     end
 
     private
+
+    def overflow_soon?(pk, model)
+      (max_value(pk.sql_type) - model.last.id) / avg(model) <= @days_count
+    end
 
     def avg(model)
       yesterday = Time.now
