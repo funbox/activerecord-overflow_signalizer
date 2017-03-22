@@ -36,16 +36,19 @@ Also you can pass some parameters in initializer:
 ```ruby
 ActiveRecord::OverflowSignalizer.new(logger: SomeCoolLogger)
 ```
+By default ActiveRecord::Base.logger
 
 + Specify list of models
 ```ruby
 ActiveRecord::OverflowSignalizer.new(models: [ModelName])
 ```
+By default it retrieve all descendants of ActiveRecord::Base
 
 + Specify count of days. Gem start notify you if some primary key will overflow over the next numbers of days.
 ```ruby
 ActiveRecord::OverflowSignalizer.new(days_count: 360)
 ```
+60 days by default
 
 + You can use own signalizer for sending notification to e-mail, slack, hipchat, etc.
 ```ruby
@@ -61,6 +64,7 @@ end
 
 ActiveRecord::OverflowSignalizer.new(signalizer: MyAwesomeSignalizer.new(some_params))
 ```
+By default it use only logging
 
 ## Development
 
