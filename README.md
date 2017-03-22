@@ -47,13 +47,24 @@ ActiveRecord::OverflowSignalizer.new(models: [ModelName])
 ActiveRecord::OverflowSignalizer.new(days_count: 360)
 ```
 
++ You can use own signalizer for sending notification to e-mail, slack, hipchat, etc.
+```ruby
+class MyAwesomeSignalizer
+  def initialize(some_params)
+    @notifier = SomeChatNotifier.new(some_params)
+  end
+
+  def signalize(msg)
+    @notifier.send_msg(msg)
+  end
+end
+
+ActiveRecord::OverflowSignalizer.new(signalizer: MyAwesomeSignalizer.new(some_params))
+```
+
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-For tests you need postgresql connection specified in `spec/database.yml`
+For tests you need postgresql connection specified in `spec/database.yml`.
 
 ## Contributing
 

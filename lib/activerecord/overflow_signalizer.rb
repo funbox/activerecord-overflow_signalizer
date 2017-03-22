@@ -13,10 +13,11 @@ module ActiveRecord
 
     DAY = 24 * 60 * 60
 
-    def initialize(logger: nil, models: nil, days_count: 60)
+    def initialize(logger: nil, models: nil, days_count: 60, signalizer: nil)
       @logger = logger || ActiveRecord::Base.logger
       @models = models || ActiveRecord::Base.descendants
       @days_count = days_count
+      @signalizer = signalizer
     end
 
     def analyse!
@@ -59,7 +60,12 @@ module ActiveRecord
       else
         msg = "Primary key in table #{table} will overflow soon! #{current_value} from #{max_value}"
       end
-      @logger.warn(msg)
+      if @logger && @logger.respond_to?(:warn)
+        @logger.warn(msg)
+      end
+      if @signalizer && @signalizer.respond_to?(:signalize)
+        @signalizer.signalize(msg)
+      end
     end
   end
 end
