@@ -22,7 +22,7 @@ module ActiveRecord
     def analyse!
       @models.group_by(&:table_name).each do |table, models|
         model = models.first
-        pk = model.columns.select(&:primary).first
+        pk = model.columns.select { |c| c.name == model.primary_key }.first
         next if model.last.nil?
         if (max_value(pk.sql_type) - model.last.id) / avg(model) <= @days_count
           signalize(table, model.last.public_send(pk.name), max_value(pk.sql_type))
