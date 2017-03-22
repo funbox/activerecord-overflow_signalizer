@@ -28,8 +28,8 @@ module ActiveRecord
     def analyse!
       @models.group_by(&:table_name).each do |table, models|
         model = models.first
-        pk = model.columns.select { |c| c.name == model.primary_key }.first
         next if model.last.nil?
+        pk = model.columns.select { |c| c.name == model.primary_key }.first
         max = MAX_VALUE.fetch(pk.sql_type) { |type| raise UnsupportedType, type }
         if overflow_soon?(max, model)
           signalize(table, model.last.public_send(pk.name), max)
