@@ -1,6 +1,6 @@
 # ActiveRecord::OverflowSignalizer
 
-One day primary key field will overflow, but if you use this gem, you will know about it before it happened.
+One day primary key field will overflow, but if you use this gem, you will know about it before it happens.
 
 ## Installation
 
@@ -20,17 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-Just placed it somewhere in your app:
+Just place it somewhere in your app:
 ```ruby
 ActiveRecord::OverflowSignalizer.new.analyse!
 ```
 
-By default it check all models in your application and log if some primary key will overflow soon or overflowed.
+By default it checks all models in your application and logs if some primary key will overflow soon or overflowed.
 
-You can placed it in some job and perform it by [clockwork](https://github.com/adamwiggins/clockwork)
-or just run it when app started in separated thread.
+You can place it in some job and perform it by [clockwork](https://github.com/adamwiggins/clockwork)
+or just run it when app starts in a separate thread.
 
-Also you can pass some parameters in initializer:
+Also you can pass some parameters to the initializer:
 
 + Specify logger
 ```ruby
@@ -42,15 +42,15 @@ By default ActiveRecord::Base.logger
 ```ruby
 ActiveRecord::OverflowSignalizer.new(models: [ModelName])
 ```
-By default it retrieve all descendants of ActiveRecord::Base
+By default it retrieves all descendants of ActiveRecord::Base
 
-+ Specify count of days. Gem start notify you if some primary key will overflow over the next numbers of days.
++ Specify count of days. Gem starts to notify you if some primary key will overflow over the next number of days.
 ```ruby
 ActiveRecord::OverflowSignalizer.new(days_count: 360)
 ```
 60 days by default
 
-+ You can use own signalizer for sending notification to e-mail, slack, hipchat, etc.
++ You can use your own signalizer for notification sending to e-mail, slack, hipchat, etc.
 ```ruby
 class MyAwesomeSignalizer
   def initialize(some_params)
@@ -64,11 +64,11 @@ end
 
 ActiveRecord::OverflowSignalizer.new(signalizer: MyAwesomeSignalizer.new(some_params))
 ```
-By default it use only logging
+By default it uses only logging
 
 ## Development
 
-For tests you need postgresql connection specified in `spec/database.yml`.
+For tests you need a postgresql connection specified in `spec/database.yml`.
 
 ## Contributing
 
