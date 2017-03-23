@@ -1,6 +1,4 @@
 adapter: postgresql
-host: 127.0.0.1
-port: 5433
 database: overflow_analyzer_test
 username: postgres
 setup: default
