@@ -1,4 +1,5 @@
 # ActiveRecord::OverflowSignalizer
+[![Build Status](https://travis-ci.org/funbox/activerecord-overflow_signalizer.svg?branch=master)](https://travis-ci.org/funbox/activerecord-overflow_signalizer)
 
 One day primary key field will overflow, but if you use this gem, you will know about it before it happens.
 
