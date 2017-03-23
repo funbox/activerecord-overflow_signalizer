@@ -5,5 +5,10 @@ gemfile:
   - gemfiles/ar42.gemfile
   - gemfiles/ar50.gemfile
 rvm:
+  - 2.1.5
   - 2.3.1
+addons:
+    postgresql: '9.4'
+before_script:
+  - psql -U postgres -c 'CREATE DATABASE overflow_analyzer_test'
 before_install: gem install bundler -v 1.14.4
