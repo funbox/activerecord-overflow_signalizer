@@ -5,6 +5,12 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
     expect(ActiveRecord::OverflowSignalizer::VERSION).not_to be nil
   end
 
+  let(:max_int) do
+    described_class::MAX_VALUE[TestIntModel.columns.select { |c| c.name == TestIntModel.primary_key }.first.sql_type]
+  end
+
+  let(:day) { 24 * 60 * 60 }
+
   describe '#analyse!' do
     context 'raise exception' do
       subject { described_class.new(models: [TestIntModel], days_count: 10) }
@@ -14,8 +20,6 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
       end
 
       context 'not empty table' do
-        let(:max_int) { 2_147_483_647 }
-        let(:day) { 24 * 60 * 60 }
         let(:today) { Time.now }
 
         context 'overflow far' do
@@ -82,8 +86,6 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
       end
 
       context 'not empty table' do
-        let(:max_int) { 2_147_483_647 }
-        let(:day) { 24 * 60 * 60 }
         let(:today) { Time.now }
 
         context 'overflow far' do
@@ -159,8 +161,6 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
       end
 
       context 'not empty table' do
-        let(:max_int) { 2_147_483_647 }
-        let(:day) { 24 * 60 * 60 }
         let(:today) { Time.now }
 
         context 'overflow far' do
