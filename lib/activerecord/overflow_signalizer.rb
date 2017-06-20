@@ -3,6 +3,8 @@ require 'active_record'
 
 module ActiveRecord
   class OverflowSignalizer
+    class Overflow < StandardError; end
+
     class UnsupportedType < StandardError
       attr_reader :type
 
@@ -33,9 +35,15 @@ module ActiveRecord
         pk = model.columns.select { |c| c.name == model.primary_key }.first
         max = MAX_VALUE.fetch(pk.sql_type) { |type| raise UnsupportedType, type }
         if overflow_soon?(max, model)
-          signalize(table, model.last.public_send(pk.name), max)
+          raise Overflow, overflow_message(table, model.last.public_send(pk.name), max)
         end
       end
+    end
+
+    def analyse
+      analyse!
+    rescue Overflow => e
+      signalize(e.message)
     end
 
     private
@@ -58,12 +66,15 @@ module ActiveRecord
       week_records.reduce(:+) / week_records.keep_if { |v| v > 0 }.size
     end
 
-    def signalize(table, current_value, max_value)
+    def overflow_message(table, current_value, max_value)
       if current_value == max_value
-        msg = "Primary key in table #{table} overflowed! #{current_value} from #{max_value}"
+        "Primary key in table #{table} overflowed! #{current_value} from #{max_value}"
       else
-        msg = "Primary key in table #{table} will overflow soon! #{current_value} from #{max_value}"
+        "Primary key in table #{table} will overflow soon! #{current_value} from #{max_value}"
       end
+    end
+
+    def signalize(msg)
       if @logger && @logger.respond_to?(:warn)
         @logger.warn(msg)
       end

@@ -23,10 +23,11 @@ Or install it yourself as:
 
 Just place it somewhere in your app:
 ```ruby
-ActiveRecord::OverflowSignalizer.new.analyse!
+ActiveRecord::OverflowSignalizer.new.analyse
 ```
 
 By default it checks all models in your application and logs if some primary key will overflow soon or overflowed.
+Also you can use unsafe method `#analyse!`, so it will raise error.
 
 You can place it in some job and perform it by [clockwork](https://github.com/adamwiggins/clockwork)
 or just run it when app starts in a separate thread.
