@@ -121,7 +121,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
 
           it 'log about owerflow' do
             expect(logger).to receive(:warn)
-              .with("Primary key in table #{TestIntModel.table_name} will overflow soon! #{TestIntModel.last.id} from #{max_int}")
+              .with("Owerflowed tables: #{[]}. Overflow soon tables: #{[TestIntModel.table_name]}")
             subject.analyse
           end
         end
@@ -141,7 +141,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
 
           it 'log about owerflow' do
             expect(logger).to receive(:warn)
-              .with("Primary key in table #{TestIntModel.table_name} overflowed! #{TestIntModel.last.id} from #{max_int}")
+              .with("Owerflowed tables: #{[TestIntModel.table_name]}. Overflow soon tables: #{[]}")
             subject.analyse
           end
         end
@@ -196,7 +196,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
 
           it 'log about owerflow' do
             expect(signalizer).to receive(:signalize)
-              .with("Primary key in table #{TestIntModel.table_name} will overflow soon! #{TestIntModel.last.id} from #{max_int}")
+              .with("Owerflowed tables: #{[]}. Overflow soon tables: #{[TestIntModel.table_name]}")
             subject.analyse
           end
         end
@@ -216,7 +216,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
 
           it 'log about owerflow' do
             expect(signalizer).to receive(:signalize)
-              .with("Primary key in table #{TestIntModel.table_name} overflowed! #{TestIntModel.last.id} from #{max_int}")
+              .with("Owerflowed tables: #{[TestIntModel.table_name]}. Overflow soon tables: #{[]}")
             subject.analyse
           end
         end
