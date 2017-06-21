@@ -4,14 +4,7 @@ require 'active_record'
 module ActiveRecord
   class OverflowSignalizer
     class Overflow < StandardError; end
-
-    class UnsupportedType < StandardError
-      attr_reader :type
-
-      def initialize(type = nil)
-        @type = type
-      end
-    end
+    class UnsupportedType < StandardError; end
 
     DAY = 24 * 60 * 60
     DEFAULT_AVG = 100_000
@@ -33,7 +26,9 @@ module ActiveRecord
         model = models.first
         next if model.abstract_class? || model.last.nil?
         pk = model.columns.select { |c| c.name == model.primary_key }.first
-        max = MAX_VALUE.fetch(pk.sql_type) { |type| raise UnsupportedType, type }
+        max = MAX_VALUE.fetch(pk.sql_type) do |type|
+          raise UnsupportedType, "Model #{model} has primary_key #{model.primary_key} with unsupported type #{type}"
+        end
         if overflow_soon?(max, model)
           raise Overflow, overflow_message(table, model.last.public_send(pk.name), max)
         end
