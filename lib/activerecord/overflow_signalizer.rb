@@ -54,13 +54,11 @@ module ActiveRecord
     end
 
     def avg(model)
-      now = model.last.created_at
-      week_records = (1..7).map do |t|
-        from = now - DAY * t
-        to = from + DAY
-        model.where(created_at: from..to).count
-      end
-      week_records.reduce(:+) / week_records.keep_if { |v| v > 0 }.size
+      to = model.last.created_at
+      from = to - 7 * DAY
+      amount = model.where(created_at: from..to).count
+      average = amount / 7
+      average.zero? ? 1 : average
     end
 
     def overflow_message(overflowed_tables)
