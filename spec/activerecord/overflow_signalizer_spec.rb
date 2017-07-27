@@ -19,6 +19,22 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
         it { expect { subject.analyse! }.not_to raise_error }
       end
 
+      context 'unsupported type of primary key' do
+        let(:today) { Time.now }
+        let(:logger) { Logger.new('/dev/null') }
+        before do
+          (1..7).each do |t|
+            record = TestStringModel.new(created_at: today - day * t, updated_at: today - day * t)
+            record.id = "id#{t}"
+            record.save!
+          end
+        end
+
+        subject { described_class.new(models: [TestStringModel], days_count: 10, logger: logger) }
+
+        it { expect { subject.analyse! }.not_to raise_error }
+      end
+
       context 'not empty table' do
         let(:today) { Time.now }
 

@@ -1,6 +1,7 @@
 require 'bundler/setup'
 require 'activerecord/overflow_signalizer'
 require 'byebug'
+require 'logger'
 require 'active_record'
 
 RSpec.configure do |config|
@@ -34,4 +35,16 @@ TestBigIntModel.connection.create_table(:bigint_test, id: false, force: true) do
   t.timestamps
 end
 TestBigIntModel.connection.execute(%Q{ ALTER TABLE "bigint_test" ADD PRIMARY KEY ("id"); })
+TestBigIntModel.reset_column_information
+
+class TestStringModel < ActiveRecord::Base
+  establish_connection YAML.load_file(DATABASE_CONFIG_PATH)
+  self.table_name = 'string_test'
+end
+
+TestBigIntModel.connection.create_table(:string_test, id: false, force: true) do |t|
+  t.column :id, :string, null: false
+  t.timestamps
+end
+TestBigIntModel.connection.execute(%Q{ ALTER TABLE "string_test" ADD PRIMARY KEY ("id"); })
 TestBigIntModel.reset_column_information

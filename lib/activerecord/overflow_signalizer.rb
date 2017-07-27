@@ -29,7 +29,9 @@ module ActiveRecord
         pk = model.columns.select { |c| c.name == model.primary_key }.first
         max = MAX_VALUE.fetch(pk.sql_type) do |type|
           @logger.warn "Model #{model} has primary_key #{model.primary_key} with unsupported type #{type}"
+          nil
         end
+        next unless max
         if overflow_soon?(max, model)
           overflowed_tables << [table, model.last.public_send(pk.name), max]
         end
