@@ -90,12 +90,12 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
 
   describe '#analyse' do
     context 'signalize to logger' do
-      let!(:logger) { double(:logger, warn: true) }
+      let!(:logger) { Logger.new('/dev/null') }
 
       subject { described_class.new(logger: logger, models: [TestIntModel], days_count: 10) }
 
       context 'empty table' do
-        it 'doesnt log anything' do
+        it 'doesnt log to warn' do
           expect(logger).not_to receive(:warn)
           subject.analyse
         end
@@ -116,7 +116,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
             TestIntModel.destroy_all
           end
 
-          it 'doesnt log anything' do
+          it 'doesnt log to warn' do
             expect(logger).not_to receive(:warn)
             subject.analyse
           end
@@ -170,7 +170,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
       subject { described_class.new(signalizer: signalizer, models: [TestIntModel], days_count: 10) }
 
       context 'empty table' do
-        it 'doesnt log anything' do
+        it 'doesnt log to warn' do
           expect(signalizer).not_to receive(:signalize)
           subject.analyse
         end
@@ -191,7 +191,7 @@ RSpec.describe ActiveRecord::OverflowSignalizer do
             TestIntModel.destroy_all
           end
 
-          it 'doesnt log anything' do
+          it 'doesnt log to warn' do
             expect(signalizer).not_to receive(:signalize)
             subject.analyse
           end
