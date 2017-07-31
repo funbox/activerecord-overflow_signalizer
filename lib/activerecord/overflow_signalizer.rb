@@ -33,7 +33,14 @@ module ActiveRecord
         end
         next unless max
         if overflow_soon?(max, model)
+          if (remaining = max - model.maximum(pk.name)) == 0
+            @logger.warn("Table #{table} field #{pk.name} has overflown!")
+          else
+            @logger.warn("Table #{table} field #{pk.name} will overflow after #{remaining} records!")
+          end
           overflowed_tables << [table, model.last.public_send(pk.name), max]
+        else
+          @logger.info("Table #{table} field #{pk.name} is not going to overflow in the next #{@days_count} days.")
         end
       end
       raise Overflow, overflow_message(overflowed_tables) if overflowed_tables.any?
